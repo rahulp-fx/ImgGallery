@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ImgGallery</title>
+
+    <style>
+      /* Reset Default Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #000;
+        color: #fff;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* ===== Header Styling ===== */
+      header {
+        width: 100%;
+        background-color: #111;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Navbar */
+      .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Burger Menu (Left Side) */
+      .menu-icon {
+        cursor: pointer;
+      }
+
+      .menu-icon img {
+        width: 28px;
+        transition: transform 0.3s ease-in-out;
+        filter: invert(1);
+      }
+
+      .menu-icon:hover img {
+        transform: scale(1.1);
+      }
+
+      /* ====== Improved Menu Dropdown ====== */
+      .menu-dropdown {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        background: #222;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        display: none;
+        width: 200px;
+        padding: 10px;
+      }
+
+      .menu-dropdown.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .menu-dropdown a {
+        display: block;
+        padding: 10px;
+        color: white;
+        text-decoration: none;
+        transition: background 0.3s ease-in-out, border-radius 0.2s;
+        border-radius: 8px;
+      }
+
+      .menu-dropdown a:hover {
+        background: #444;
+      }
+
+      /* Fade-in Animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ===== Right-Side Content (Search & Auth Links) ===== */
+      .nav-content {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        gap: 20px;
+      }
+
+      /* Search Bar */
+      .search-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #222;
+        border-radius: 25px;
+        padding: 6px 20px;
+        border: 1px solid #333;
+        transition: 0.3s ease-in-out;
+      }
+
+      .search-container:hover {
+        border-color: white;
+      }
+
+      .search-container input {
+        border: none;
+        outline: none;
+        background: none;
+        color: #fff;
+        padding: 8px;
+        font-size: 14px;
+        width: 180px;
+      }
+
+      .search-container input::placeholder {
+        color: #bbb;
+      }
+
+      .search-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+
+      .search-button img {
+        width: 26px;
+        height: 26px;
+        transition: transform 0.3s ease;
+        background-color: white;
+        border-radius: 50%;
+      }
+
+      .search-button:hover img {
+        transform: scale(1.2);
+      }
+
+      /* ====== Improved Auth Links with Animation ====== */
+      .auth-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .auth-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: background 0.3s ease-in-out, transform 0.2s;
+      }
+
+      .auth-links a:hover {
+        background-color: white;
+        color: black;
+        transform: scale(1.1);
+      }
+
+      /* ===== Main Content ===== */
+      main {
+        padding-top: 80px;
+        display: flex;
+        justify-content: center;
+        padding: 100px 20px;
+      }
+
+      /* ===== Fixed Image Gallery Grid ===== */
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+        justify-items: center;
+      }
+
+      /* Image Card */
+      .image-card {
+        background: #222;
+        padding: 8px;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .image-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+      }
+
+      .image-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      /* ===== Add Image Button ===== */
+      .add-image-card {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        min-height: 220px;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .add-image-card:hover {
+        background: #444;
+        transform: scale(1.05);
+      }
+
+      /* ===== Footer ===== */
+      footer {
+        background: #111;
+        padding: 15px;
+        text-align: center;
+      }
+
+      footer a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 14px;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* ===== Responsive Fixes ===== */
+      @media (max-width: 768px) {
+        .search-container input {
+          width: 140px;
+        }
+
+        .auth-links a {
+          padding: 5px 10px;
+        }
+
+        .container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 500px) {
+        .navbar {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .nav-content {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .search-container {
+          width: 100%;
+        }
+
+        .auth-links {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <!-- Burger Menu Icon -->
+        <div class="menu-icon">
+          <img src="burger-bar.png" alt="menu" />
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="menu-dropdown">
+          <a href="home.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="vote.html">Vote</a>
+        </div>
+
+        <!-- Right-Side Content (Search & Auth Links) -->
+        <div class="nav-content">
+          <!-- Search Bar -->
+          <div class="search-container">
+            <input type="text" placeholder="Search username..." />
+            <button class="search-button">
+              <img src="search.png" alt="Search" />
+            </button>
+          </div>
+
+          <!-- Auth Links -->
+          <div class="auth-links">
+            <a href="signup.html" target="_blank">SignUp</a>
+            <a href="login.html" target="_blank">Login</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="image-card">
+          <img src="images/img1.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img2.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img3.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img4.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img5.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img6.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img7.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img8.jpg" alt="image" loading="lazy" />
+        </div>
+        <div class="image-card">
+          <img src="images/img9.jpg" alt="image" loading="lazy" />
+        </div>
+
+        <!-- Add Image Card -->
+        <div
+          class="add-image-card"
+          onclick="document.getElementById('fileInput').click();"
+        >
+          + Add Image
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div>
+        <a href="https://github.com/rahulp-fx">Github</a>
+        <a href="https://www.linkedin.com/in/rahul-parmar-735ab632a/"
+          >LinkedIn</a
+        >
+        <a href="https://www.instagram.com/_rahulp51_/">Instagram</a>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const menuIcon = document.querySelector(".menu-icon");
+        const menuDropdown = document.querySelector(".menu-dropdown");
+
+        // Toggle Menu Dropdown
+        menuIcon.addEventListener("click", function () {
+          menuDropdown.classList.toggle("show");
+        });
+
+        // Close menu if clicked outside
+        document.addEventListener("click", function (event) {
+          if (
+            !menuIcon.contains(event.target) &&
+            !menuDropdown.contains(event.target)
+          ) {
+            menuDropdown.classList.remove("show");
+          }
+        });
+
+        // Search Button Functionality
+        const searchButton = document.querySelector(".search-button");
+        const searchInput = document.querySelector(".search-container input");
+
+        searchButton.addEventListener("click", function () {
+          const query = searchInput.value.trim();
+          if (query) {
+            alert("Searching for: " + query); // Replace with actual search logic
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
